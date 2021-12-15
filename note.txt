@@ -1,0 +1,5 @@
+- Submit SQL table schemas
+- Remove example panels before submission (auto -1 if not)
+- Do not use JavaScript/CSS to hide/track/manipulate your data, 
+- This will result in an automatic 0. This is a PHP course.
+- Don’t worry about duplicate email addresses or duplicate item titles/descriptions
