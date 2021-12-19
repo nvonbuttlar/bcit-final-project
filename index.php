@@ -24,6 +24,11 @@ if ($_GET['logout']) {
     logout();
 }
 
+if ($_GET['product_upload']) {
+    $user = getUser($_SESSION['user_email']);
+    uploadProduct($_POST, $_FILES, $user['id']);
+}
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -57,10 +62,11 @@ if ($_GET['logout']) {
             <div class="col-md-6 col-md-offset-3">
                 <?php if ($_SESSION['logged_in'] && $_SESSION['user_email']) {
                     echo '<button class="btn btn-default" data-toggle="modal" data-target="#newItem"><i class="fa fa-photo"></i> New Item</button>';
+                    echo '<a href="index.php?logout=true" class="btn btn-default pull-right"><i class="fa fa-sign-out"> </i> Logout</a>';
+                } else {
+                    echo '<a href="#" class="btn btn-default pull-right" data-toggle="modal" data-target="#login"><i class="fa fa-sign-in"> </i> Login</a>';
+                    echo '<a href="#" class="btn btn-default pull-right" data-toggle="modal" data-target="#signup"><i class="fa fa-user"> </i> Sign Up</a>';
                 } ?>
-                <a href="index.php?logout=true" class="btn btn-default pull-right"><i class="fa fa-sign-out"> </i> Logout</a>
-                <a href="#" class="btn btn-default pull-right" data-toggle="modal" data-target="#login"><i class="fa fa-sign-in"> </i> Login</a>
-                <a href="#" class="btn btn-default pull-right" data-toggle="modal" data-target="#signup"><i class="fa fa-user"> </i> Sign Up</a>
             </div>
         </div>
 
@@ -270,7 +276,7 @@ if ($_GET['logout']) {
 
 <div id="newItem" class="modal fade" tabindex="-1" role="dialog">
 <div class="modal-dialog" role="document">
-    <form role="form" method="post" action="">
+    <form role="form" method="post" action="index.php?product_upload=true" enctype="multipart/form-data">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -279,19 +285,19 @@ if ($_GET['logout']) {
             <div class="modal-body">
                 <div class="form-group">
                     <label>Title</label>
-                    <input class="form-control" type="text">
+                    <input class="form-control" type="text" name="title" >
                 </div>
                 <div class="form-group">
                     <label>Price</label>
-                    <input class="form-control" type="text">
+                    <input class="form-control" type="number" name="price" >
                 </div>
                 <div class="form-group">
                     <label>Description</label>
-                    <input class="form-control" type="text">
+                    <input class="form-control" type="text" name="description" >
                 </div>
                 <div class="form-group">
                     <label>Picture</label>
-                    <input class="form-control" type="file">
+                    <input class="form-control" type="file" name="picture" >
                 </div>
             </div>
             <div class="modal-footer">

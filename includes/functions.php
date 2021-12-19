@@ -147,3 +147,46 @@ function addToRecentlyViewed($id)
     setcookie("rv_".$id, $id, time()+3600);
   }
 }
+
+function uploadProduct($data, $file, $user_id)
+{
+
+    $title = trim($data['title']);
+    $price = trim($data['price']);
+    $description = trim($data['description']);
+    $picture = md5($title.time());
+
+    $moved   = move_uploaded_file($file['picture']['tmp_name'], 'products/'.$picture);
+
+    if($moved)
+    {
+        $link    = connect();
+        $query   = 'insert into products (title, price, description, picture, user, pinned, downvote)
+        values ("'.$title.'", "'.$price.'", "'.$description.'", "'.$picture.'", "'.$user_id.'", 0, 0)';
+        $result = mysqli_query($link, $query);
+        
+        if ($result) {
+          header('Location: index.php');
+          echo "You have succesfully posted a new product!";
+        }
+
+        mysqli_close($link);
+
+        return $result;
+    }
+
+    return false;
+}
+
+function getUser($email) {
+    $link     = connect();
+    $query   = 'select * from users where email = "'.$email.'"';
+    $success = mysqli_query($link, $query);
+
+    while($row = mysqli_fetch_array($success)) 
+    {
+        return $row;
+    }
+
+    mysqli_close($link);
+}
