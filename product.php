@@ -1,3 +1,12 @@
+<?php
+require 'includes/functions.php';
+session_start();
+
+$product_info = getProductInfo($_GET['id']);
+
+$product_user = getProductUser($product_info['user']);
+
+?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -37,19 +46,19 @@
                 </div>
                 <div class="panel panel-info">
                     <div class="panel-heading">
-                        Noodles
+                        <?php echo $product_info['title']?>
                     </div>
                     <div class="panel-body text-center">
                         <p>
-                            <img class="img-rounded img-thumbnail" src="products/f88008dc63a67983e5824dafa0935662.png"/>
+                            <img class="img-rounded img-thumbnail" src="products/<?php echo $product_info['picture']?>"/>
                         </p>
                         <p class="text-muted text-justify">
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam et accumsan mauris, non faucibus massa. Maecenas ac dolor aliquet, euismod nisl ut, congue quam.
+                        <?php echo $product_info['description']?>
                         </p>
                     </div>
                     <div class="panel-footer ">
-                        <span><a href=""><i class="fa fa-envelope"></i> Alex Akins</a></span>
-                        <span class="pull-right">$11.99</span>
+                        <span><a href="<?php echo $product_user['email']?>"><i class="fa fa-envelope"></i> <?php echo $product_user['first_name'] . ' ' . $product_user['last_name']?></a></span>
+                        <span class="pull-right"><?php echo $product_info['price']?></span>
                     </div>
                 </div>
             </div>

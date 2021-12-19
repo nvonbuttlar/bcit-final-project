@@ -2,6 +2,8 @@
 require 'includes/functions.php';
 session_start();
 
+$products = getAllProducts();
+
 if ($_GET['sign_up']) {
     checkSignUp($_POST);
 }
@@ -196,6 +198,7 @@ if ($_GET['logout']) {
             </div>
         </div>
 
+        <!-- Search -->
         <div class="row">
             <div class="col-md-4">
                     <form class="form-inline">
@@ -212,285 +215,55 @@ if ($_GET['logout']) {
             </div>
         </div>
 
-        <div class="row">
+        <!-- Products for sale -->
 
-            <div class="col-md-3">
-                <div class="panel panel-warning">
-                    <div class="panel-heading">
-                        <a class="" href="" data-toggle="tooltip" title="Unpin item">
-                            <i class="fa fa-dot-circle-o"></i>
-                        </a>
-                        <span>
-                            Noodles
-                        </span>
-                        <span class="pull-right">
-                            <a class="" href="" data-toggle="tooltip" title="Delete item">
-                                <i class="fa fa-trash"></i>
+        <?php 
+            foreach($products as $product)
+            {
+                $productUser = getProductUser($product['user']);
+                echo '
+                <div class="row">
+                <div class="col-md-3">
+                    <div class="panel panel-warning">
+                        <div class="panel-heading">
+                            <a class="" href="" data-toggle="tooltip" title="Unpin item">
+                                <i class="fa fa-dot-circle-o"></i>
                             </a>
-                        </span>
-                    </div>
-                    <div class="panel-body text-center">
-                        <p>
-                            <a href="product.php">
-                                <img class="img-rounded img-thumbnail" src="products/f88008dc63a67983e5824dafa0935662.png"/>
+                            <span>
+                                ' . $product['title'] . '
+                            </span>
+                            <span class="pull-right">
+                                <a class="" href="" data-toggle="tooltip" title="Delete item">
+                                    <i class="fa fa-trash"></i>
+                                </a>
+                            </span>
+                        </div>
+                        <div class="panel-body text-center">
+                            <p>
+                                <a href="product.php?id='.$product['id'].'">
+                                    <img class="img-rounded img-thumbnail" src="products/' . $product['picture'] .'"/>
+                                </a>
+                            </p>
+                            <p class="text-muted text-justify">
+                                '.$product['description'].'
+                            </p>
+                            <a class="pull-left" href="" data-toggle="tooltip" title="Downvote item">
+                                <i class="fa fa-thumbs-down"></i>
                             </a>
-                        </p>
-                        <p class="text-muted text-justify">
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam et accumsan mauris, non faucibus massa. Maecenas ac dolor aliquet, euismod nisl ut, congue quam.
-                        </p>
-                        <a class="pull-left" href="" data-toggle="tooltip" title="Downvote item">
-                            <i class="fa fa-thumbs-down"></i>
-                        </a>
-                    </div>
-                    <div class="panel-footer ">
-                        <span><a href="mailto:fakeemail@example.com" data-toggle="tooltip" title="Email seller"><i class="fa fa-envelope"></i> Alex Akins</a></span>
-                        <span class="pull-right">$11.99</span>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="panel panel-warning">
-                    <div class="panel-heading">
-                        <a class="" href="" data-toggle="tooltip" title="Unpin item">
-                            <i class="fa fa-dot-circle-o"></i>
-                        </a>
-                        <span>
-                            Cherry
-                        </span>
-                        <span class="pull-right text-muted">
-                            <a class="" href="" data-toggle="tooltip" title="Delete item">
-                                <i class="fa fa-trash"></i>
-                            </a>
-                        </span>
-                    </div>
-                    <div class="panel-body text-center">
-                        <p>
-                            <a href="product.php">
-                                <img class="img-rounded img-thumbnail" src="products/c7a4476fc64b75ead800da9ea2b7d072.png"/>
-                            </a>
-                        </p>
-                        <p class="text-muted text-justify">
-                            Pellentesque a convallis velit, et viverra odio. Phasellus maximus erat eu finibus tristique. Aliquam posuere, metus ac eleifend dignissim.
-                        </p>
-                        <a class="pull-left" href="" data-toggle="tooltip" title="Downvote item">
-                            <i class="fa fa-thumbs-down"></i>
-                        </a>
-                    </div>
-                    <div class="panel-footer ">
-                        <span><a href="mailto:fakeemail@example.com" data-toggle="tooltip" title="Email seller"><i class="fa fa-envelope"></i> Jane Smith</a></span>
-                        <span class="pull-right">$10.00</span>
-                    </div>
-                </div>
-            </div>
+                        </div>
+                        <div class="panel-footer ">
 
-            <div class="col-md-3">
-                <div class="panel panel-info">
-                    <div class="panel-heading">
-                        <a class="" href="" data-toggle="tooltip" title="Pin item">
-                            <i class="fa fa-thumb-tack"></i>
-                        </a>
-                        <span>
-                            Sushi
-                        </span>
-                        <span class="pull-right text-muted">
-                            <a class="" href="" data-toggle="tooltip" title="Delete item">
-                                <i class="fa fa-trash"></i>
-                            </a>
-                        </span>
-                    </div>
-                    <div class="panel-body text-center">
-                        <p>
-                            <a href="product.php">
-                                <img class="img-rounded img-thumbnail" src="products/aea6de9cbaee9d2704dcf81f4a194991.png"/>
-                            </a>
-                        </p>
-                        <p class="text-muted text-justify">
-                            Donec aliquet vulputate neque nec posuere. Fusce a ex elementum, aliquam lectus vel, tincidunt sem. Sed pharetra imperdiet mauris ut semper.
-                        </p>
-                        <a class="pull-left" href="" data-toggle="tooltip" title="Downvote item">
-                            <i class="fa fa-thumbs-down"></i>
-                        </a>
-                    </div>
-                    <div class="panel-footer ">
-                        <span><a href="mailto:fakeemail@example.com" data-toggle="tooltip" title="Email seller"><i class="fa fa-envelope"></i> Jane Smith</a></span>
-                        <span class="pull-right">$10.00</span>
+                            <span><a href="mailto:'.$productUser['email'].'" data-toggle="tooltip" title="Email seller"><i class="fa fa-envelope"></i> ' . $productUser['first_name'].' '.$productUser['last_name'].'</a></span>
+                            <span class="pull-right">$' . number_format($product['price'], 2, '.', '') .'</span>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-md-3">
-                <div class="panel panel-info">
-                    <div class="panel-heading">
-                        <a class="" href="" data-toggle="tooltip" title="Pin item">
-                            <i class="fa fa-thumb-tack"></i>
-                        </a>
-                        <span>
-                            Apple
-                        </span>
-                        <span class="pull-right text-muted">
-                            <a class="" href="" data-toggle="tooltip" title="Delete item">
-                                <i class="fa fa-trash"></i>
-                            </a>
-                        </span>
-                    </div>
-                    <div class="panel-body text-center">
-                        <p>
-                            <a href="product.php">
-                                <img class="img-rounded img-thumbnail" src="products/1f3870be274f6c49b3e31a0c6728957f.png"/>
-                            </a>
-                        </p>
-                        <p class="text-muted text-justify">
-                            Vivamus quam dolor, ultricies sed gravida vitae, dictum eu lectus. Cras suscipit urna leo, eget luctus nisi luctus vel. Suspendisse in pulvinar libero.
-                        </p>
-                        <a class="pull-left" href="">
-                            <i class="fa fa-thumbs-down" data-toggle="tooltip" title="Downvote item"></i>
-                        </a>
-                    </div>
-                    <div class="panel-footer ">
-                        <span><a href="mailto:fakeemail@example.com" data-toggle="tooltip" title="Email seller"><i class="fa fa-envelope"></i> Zebra Zaney</a></span>
-                        <span class="pull-right">$1.00</span>
-                    </div>
-                </div>
-            </div>
+                ';
 
-        </div>
-        <div class="row">
-            <div class="col-md-3">
-                <div class="panel panel-info">
-                    <div class="panel-heading">
-                        <a class="" href="" data-toggle="tooltip" title="Pin item">
-                            <i class="fa fa-thumb-tack"></i>
-                        </a>
-                        <span>
-                            Noodles
-                        </span>
-                        <span class="pull-right text-muted">
-                            <a class="" href="" data-toggle="tooltip" title="Delete item">
-                                <i class="fa fa-trash"></i>
-                            </a>
-                        </span>
-                    </div>
-                    <div class="panel-body text-center">
-                        <p>
-                            <a href="product.php">
-                                <img class="img-rounded img-thumbnail" src="products/f88008dc63a67983e5824dafa0935662.png"/>
-                            </a>
-                        </p>
-                        <p class="text-muted text-justify">
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam et accumsan mauris, non faucibus massa. Maecenas ac dolor aliquet, euismod nisl ut, congue quam.
-                        </p>
-                        <a class="pull-left" href="" data-toggle="tooltip" title="Downvote item">
-                            <i class="fa fa-thumbs-down"></i>
-                        </a>
-                    </div>
-                    <div class="panel-footer ">
-                        <span><a href="mailto:fakeemail@example.com" data-toggle="tooltip" title="Email seller"><i class="fa fa-envelope"></i> Zebra Zaney</a></span>
-                        <span class="pull-right">$11.99</span>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="panel panel-info">
-                    <div class="panel-heading">
-                        <a class="" href="" data-toggle="tooltip" title="Pin item">
-                            <i class="fa fa-thumb-tack"></i>
-                        </a>
-                        <span>
-                            Apple
-                        </span>
-                        <span class="pull-right text-muted">
-                            <a class="" href="" data-toggle="tooltip" title="Delete item">
-                                <i class="fa fa-trash"></i>
-                            </a>
-                        </span>
-                    </div>
-                    <div class="panel-body text-center">
-                        <p>
-                            <a href="product.php">
-                                <img class="img-rounded img-thumbnail" src="products/1f3870be274f6c49b3e31a0c6728957f.png"/>
-                            </a>
-                        </p>
-                        <p class="text-muted text-justify">
-                            Vivamus quam dolor, ultricies sed gravida vitae, dictum eu lectus. Cras suscipit urna leo, eget luctus nisi luctus vel. Suspendisse in pulvinar libero.
-                        </p>
-                        <a class="pull-left" href="">
-                            <i class="fa fa-thumbs-down" data-toggle="tooltip" title="Downvote item"></i>
-                        </a>
-                    </div>
-                    <div class="panel-footer ">
-                        <span><a href="mailto:fakeemail@example.com" data-toggle="tooltip" title="Email seller"><i class="fa fa-envelope"></i> Zebra Zaney</a></span>
-                        <span class="pull-right">$1.00</span>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="panel panel-info">
-                    <div class="panel-heading">
-                        <a class="" href="" data-toggle="tooltip" title="Pin item">
-                            <i class="fa fa-thumb-tack"></i>
-                        </a>
-                        <span>
-                            Sushi
-                        </span>
-                        <span class="pull-right text-muted">
-                            <a class="" href="" data-toggle="tooltip" title="Delete item">
-                                <i class="fa fa-trash"></i>
-                            </a>
-                        </span>
-                    </div>
-                    <div class="panel-body text-center">
-                        <p>
-                            <a href="product.php">
-                                <img class="img-rounded img-thumbnail" src="products/aea6de9cbaee9d2704dcf81f4a194991.png"/>
-                            </a>
-                        </p>
-                        <p class="text-muted text-justify">
-                            Donec aliquet vulputate neque nec posuere. Fusce a ex elementum, aliquam lectus vel, tincidunt sem. Sed pharetra imperdiet mauris ut semper.
-                        </p>
-                        <a class="pull-left" href="" data-toggle="tooltip" title="Downvote item">
-                            <i class="fa fa-thumbs-down"></i>
-                        </a>
-                    </div>
-                    <div class="panel-footer ">
-                        <span><a href="mailto:fakeemail@example.com" data-toggle="tooltip" title="Email seller"><i class="fa fa-envelope"></i> John Doe</a></span>
-                        <span class="pull-right">$10.00</span>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="panel panel-info">
-                    <div class="panel-heading">
-                        <a class="" href="" data-toggle="tooltip" title="Pin item">
-                            <i class="fa fa-thumb-tack"></i>
-                        </a>
-                        <span>
-                            Cherry
-                        </span>
-                        <span class="pull-right text-muted">
-                            <a class="" href="" data-toggle="tooltip" title="Delete item">
-                                <i class="fa fa-trash"></i>
-                            </a>
-                        </span>
-                    </div>
-                    <div class="panel-body text-center">
-                        <p>
-                            <a href="product.php">
-                                <img class="img-rounded img-thumbnail" src="products/c7a4476fc64b75ead800da9ea2b7d072.png"/>
-                            </a>
-                        </p>
-                        <p class="text-muted text-justify">
-                            Pellentesque a convallis velit, et viverra odio. Phasellus maximus erat eu finibus tristique. Aliquam posuere, metus ac eleifend dignissim.
-                        </p>
-                        <a class="pull-left" href="" data-toggle="tooltip" title="Downvote item">
-                            <i class="fa fa-thumbs-down"></i>
-                        </a>
-                    </div>
-                    <div class="panel-footer ">
-                        <span><a href="mailto:fakeemail@example.com" data-toggle="tooltip" title="Email seller"><i class="fa fa-envelope"></i> John Doe</a></span>
-                        <span class="pull-right">$10.00</span>
-                    </div>
-                </div>
-            </div>
-        </div>
+            }
+        ?> 
+
+            
         <div class="row">
             <div class="col-md-3">
                 <div class="panel panel-info">

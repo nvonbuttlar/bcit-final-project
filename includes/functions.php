@@ -101,3 +101,40 @@ function logout() {
   exit();
 }
 
+function getAllProducts()
+{
+    $link     = connect();
+    $query    = 'select * from products';
+    $products = mysqli_query($link, $query);
+
+    mysqli_close($link);
+    return $products;
+}
+
+function getProductUser($id)
+{
+    $link    = connect();
+    $query   = 'select * from users where id = "'.$id.'"';
+    $success = mysqli_query($link, $query);
+
+    while($row = mysqli_fetch_array($success)) 
+    {
+        return $row;
+    }
+
+    mysqli_close($link);
+}
+
+function getProductInfo($id)
+{
+    $link     = connect();
+    $query   = 'select * from products where id = "'.$id.'"';
+    $success = mysqli_query($link, $query);
+
+    while($row = mysqli_fetch_array($success)) 
+    {
+        return $row;
+    }
+
+    mysqli_close($link);
+}
