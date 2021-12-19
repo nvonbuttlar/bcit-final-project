@@ -1,3 +1,26 @@
+<?php
+require 'includes/functions.php';
+session_start();
+
+if ($_GET['sign_up']) {
+    checkSignUp($_POST);
+}
+
+if ($_GET['login']) {
+    if (findUser($_POST['email'], $_POST['password'])) {
+        echo "login successful"; 
+        $_SESSION['logged_in'] = true;
+        $_SESSION['user_email'] = $email;
+    } else {
+        echo "login failed"; 
+    }
+}
+
+if ($_GET['logout']) {
+    logout();
+}
+
+?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -29,7 +52,7 @@
         <div class="row">
             <div class="col-md-6 col-md-offset-3">
                 <button class="btn btn-default" data-toggle="modal" data-target="#newItem"><i class="fa fa-photo"></i> New Item</button>
-                <a href="#" class="btn btn-default pull-right"><i class="fa fa-sign-out"> </i> Logout</a>
+                <a href="index.php?logout=true" class="btn btn-default pull-right"><i class="fa fa-sign-out"> </i> Logout</a>
                 <a href="#" class="btn btn-default pull-right" data-toggle="modal" data-target="#login"><i class="fa fa-sign-in"> </i> Login</a>
                 <a href="#" class="btn btn-default pull-right" data-toggle="modal" data-target="#signup"><i class="fa fa-user"> </i> Sign Up</a>
             </div>
@@ -508,9 +531,11 @@
 
 </div>
 
+
+
 <div id="login" class="modal fade" tabindex="-1" role="dialog">
 <div class="modal-dialog" role="document">
-    <form role="form" method="post" action="">
+    <form role="form" method="post" action="index.php?login=true">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -519,11 +544,11 @@
             <div class="modal-body">
                 <div class="form-group">
                     <label>Email</label>
-                    <input class="form-control" type="text">
+                    <input class="form-control" type="email" name="email">
                 </div>
                 <div class="form-group">
                     <label>Password</label>
-                    <input class="form-control" type="text">
+                    <input class="form-control" type="password" name="password">
                 </div>
             </div>
             <div class="modal-footer">
@@ -572,7 +597,7 @@
 
 <div id="signup" class="modal fade" tabindex="-1" role="dialog">
 <div class="modal-dialog" role="document">
-    <form role="form" method="post" action="">
+    <form role="form" method="post" action="index.php?sign_up=true">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -581,23 +606,23 @@
             <div class="modal-body">
                 <div class="form-group">
                     <label>First Name</label>
-                    <input class="form-control" type="text">
+                    <input class="form-control" type="text" name="first_name">
                 </div>
                 <div class="form-group">
                     <label>Last Name</label>
-                    <input class="form-control" type="text">
+                    <input class="form-control" type="text" name="last_name">
                 </div>
                 <div class="form-group">
                     <label>Email</label>
-                    <input class="form-control" type="text">
+                    <input class="form-control" type="email" name="email">
                 </div>
                 <div class="form-group">
                     <label>Password</label>
-                    <input class="form-control" type="text">
+                    <input class="form-control" type="password" name="password">
                 </div>
                 <div class="form-group">
                     <label>Verify Password</label>
-                    <input class="form-control" type="text">
+                    <input class="form-control" type="password" name="verify_password">
                 </div>
             </div>
             <div class="modal-footer">
