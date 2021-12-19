@@ -4,6 +4,10 @@ session_start();
 
 $products = getAllProducts();
 
+if ($_SESSION['logged_in'] && $_SESSION['user_email']) {
+    echo '<h2>Welcome: ' . $_SESSION['user_email'] . '</h2>';
+}
+
 if ($_GET['sign_up']) {
     checkSignUp($_POST);
 }
@@ -11,8 +15,6 @@ if ($_GET['sign_up']) {
 if ($_GET['login']) {
     if (findUser($_POST['email'], $_POST['password'])) {
         echo "login successful"; 
-        $_SESSION['logged_in'] = true;
-        $_SESSION['user_email'] = $email;
     } else {
         echo "login failed"; 
     }
@@ -53,7 +55,9 @@ if ($_GET['logout']) {
 
         <div class="row">
             <div class="col-md-6 col-md-offset-3">
-                <button class="btn btn-default" data-toggle="modal" data-target="#newItem"><i class="fa fa-photo"></i> New Item</button>
+                <?php if ($_SESSION['logged_in'] && $_SESSION['user_email']) {
+                    echo '<button class="btn btn-default" data-toggle="modal" data-target="#newItem"><i class="fa fa-photo"></i> New Item</button>';
+                } ?>
                 <a href="index.php?logout=true" class="btn btn-default pull-right"><i class="fa fa-sign-out"> </i> Logout</a>
                 <a href="#" class="btn btn-default pull-right" data-toggle="modal" data-target="#login"><i class="fa fa-sign-in"> </i> Login</a>
                 <a href="#" class="btn btn-default pull-right" data-toggle="modal" data-target="#signup"><i class="fa fa-user"> </i> Sign Up</a>
@@ -68,126 +72,56 @@ if ($_GET['logout']) {
                 <hr/>
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-3">
-                <div class="panel panel-info">
-                    <div class="panel-heading">
-                            Noodles
-                        <span class="pull-right text-muted">
-                            <a class="" href="" data-toggle="tooltip" title="Delete item">
-                                <i class="fa fa-trash"></i>
-                            </a>
-                        </span>
+        <?php 
+            $count = 0;
+            foreach($products as $product)
+            {
+                if ($product['id'] == $_COOKIE['rv_'.$product['id']] && $count <= 4) {
+                    $productUser = getProductUser($product['user']);
+                    echo '
+                    <div class="row">
+                    <div class="col-md-3">
+                        <div class="panel panel-warning">
+                            <div class="panel-heading">
+                                <a class="" href="" data-toggle="tooltip" title="Unpin item">
+                                    <i class="fa fa-dot-circle-o"></i>
+                                </a>
+                                <span>
+                                    ' . $product['title'] . '
+                                </span>
+                                <span class="pull-right">
+                                    <a class="" href="" data-toggle="tooltip" title="Delete item">
+                                        <i class="fa fa-trash"></i>
+                                    </a>
+                                </span>
+                            </div>
+                            <div class="panel-body text-center">
+                                <p>
+                                    <a href="product.php?id='.$product['id'].'">
+                                        <img class="img-rounded img-thumbnail" src="products/' . $product['picture'] .'"/>
+                                    </a>
+                                </p>
+                                <p class="text-muted text-justify">
+                                    '.$product['description'].'
+                                </p>
+                                <a class="pull-left" href="" data-toggle="tooltip" title="Downvote item">
+                                    <i class="fa fa-thumbs-down"></i>
+                                </a>
+                            </div>
+                            <div class="panel-footer ">
+    
+                                <span><a href="mailto:'.$productUser['email'].'" data-toggle="tooltip" title="Email seller"><i class="fa fa-envelope"></i> ' . $productUser['first_name'].' '.$productUser['last_name'].'</a></span>
+                                <span class="pull-right">$' . number_format($product['price'], 2, '.', '') .'</span>
+                            </div>
+                        </div>
                     </div>
-                    <div class="panel-body text-center">
-                        <p>
-                            <a href="product.php">
-                                <img class="img-rounded img-thumbnail" src="products/f88008dc63a67983e5824dafa0935662.png"/>
-                            </a>
-                        </p>
-                        <p class="text-muted text-justify">
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam et accumsan mauris, non faucibus massa. Maecenas ac dolor aliquet, euismod nisl ut, congue quam.
-                        </p>
-                        <a class="pull-left" href="" data-toggle="tooltip" title="Downvote item">
-                            <i class="fa fa-thumbs-down"></i>
-                        </a>
                     </div>
-                    <div class="panel-footer ">
-                        <span><a href="mailto:fakeemail@example.com" data-toggle="tooltip" title="Email seller"><i class="fa fa-envelope"></i> Alex Akins</a></span>
-                        <span class="pull-right">$11.99</span>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="panel panel-info">
-                    <div class="panel-heading">
-                        Apple
-                        <span class="pull-right text-muted">
-                            <a class="" href="" data-toggle="tooltip" title="Delete item">
-                                <i class="fa fa-trash"></i>
-                            </a>
-                        </span>
-                    </div>
-                    <div class="panel-body text-center">
-                        <p>
-                            <a href="product.php">
-                                <img class="img-rounded img-thumbnail" src="products/1f3870be274f6c49b3e31a0c6728957f.png"/>
-                            </a>
-                        </p>
-                        <p class="text-muted text-justify">
-                            Vivamus quam dolor, ultricies sed gravida vitae, dictum eu lectus. Cras suscipit urna leo, eget luctus nisi luctus vel. Suspendisse in pulvinar libero.
-                        </p>
-                        <a class="pull-left" href="" data-toggle="tooltip" title="Downvote item">
-                            <i class="fa fa-thumbs-down"></i>
-                        </a>
-                    </div>
-                    <div class="panel-footer ">
-                        <span><a href="mailto:fakeemail@example.com" data-toggle="tooltip" title="Email seller"><i class="fa fa-envelope"></i> Alex Akins</a></span>
-                        <span class="pull-right">$1.00</span>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="panel panel-info">
-                    <div class="panel-heading">
-                        Sushi
-                        <span class="pull-right text-muted">
-                            <a class="" href="" data-toggle="tooltip" title="Delete item">
-                                <i class="fa fa-trash"></i>
-                            </a>
-                        </span>
-                    </div>
-                    <div class="panel-body text-center">
-                        <p>
-                            <a href="product.php">
-                                <img class="img-rounded img-thumbnail" src="products/aea6de9cbaee9d2704dcf81f4a194991.png"/>
-                            </a>
-                        </p>
-                        <p class="text-muted text-justify">
-                            Donec aliquet vulputate neque nec posuere. Fusce a ex elementum, aliquam lectus vel, tincidunt sem. Sed pharetra imperdiet mauris ut semper.
-                        </p>
-                        <a class="pull-left" href="" data-toggle="tooltip" title="Downvote item">
-                            <i class="fa fa-thumbs-down"></i>
-                        </a>
-                    </div>
-                    <div class="panel-footer ">
-                        <span><a href="mailto:fakeemail@example.com" data-toggle="tooltip" title="Email seller"><i class="fa fa-envelope"></i> Jane Smith</a></span>
-                        <span class="pull-right">$10.00</span>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="panel panel-info">
-                    <div class="panel-heading">
-                        Cherry
-                        <span class="pull-right text-muted">
-                            <a class="" href="" data-toggle="tooltip" title="Delete item">
-                                <i class="fa fa-trash"></i>
-                            </a>
-                        </span>
-                    </div>
-                    <div class="panel-body text-center">
-                        <p>
-                            <a href="product.php">
-                               <img class="img-rounded img-thumbnail" src="products/c7a4476fc64b75ead800da9ea2b7d072.png"/>
-                            </a>
-                        </p>
-                        <p class="text-muted text-justify">
-                            Pellentesque a convallis velit, et viverra odio. Phasellus maximus erat eu finibus tristique. Aliquam posuere, metus ac eleifend dignissim.
-                        </p>
-                        <a class="pull-left" href="" data-toggle="tooltip" title="Downvote item">
-                            <i class="fa fa-thumbs-down"></i>
-                        </a>
-                    </div>
-                    <div class="panel-footer ">
-                        <span><a href="mailto:fakeemail@example.com" data-toggle="tooltip" title="Email seller"><i class="fa fa-envelope"></i> Jane Smith</a></span>
-                        <span class="pull-right">$10.00</span>
-                    </div>
-                </div>
-            </div>
+                    ';
 
-
-        </div>
+                    $count++;
+                }
+            }
+        ?> 
 
         <div class="row">
             <div class="col-md-3">
@@ -257,6 +191,7 @@ if ($_GET['logout']) {
                             <span class="pull-right">$' . number_format($product['price'], 2, '.', '') .'</span>
                         </div>
                     </div>
+                </div>
                 </div>
                 ';
 

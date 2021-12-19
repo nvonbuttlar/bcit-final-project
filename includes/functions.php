@@ -85,6 +85,8 @@ function findUser($email, $password)
     if (mysqli_fetch_array($results))
     {
         $found = true;
+        $_SESSION['logged_in'] = true;
+        $_SESSION['user_email'] = $_POST['email'];
     }
 
     mysqli_close($link);
@@ -137,4 +139,11 @@ function getProductInfo($id)
     }
 
     mysqli_close($link);
+}
+
+function addToRecentlyViewed($id)
+{
+  if(!isset($_COOKIE['rv_'.$id])) {
+    setcookie("rv_".$id, $id, time()+3600);
+  }
 }

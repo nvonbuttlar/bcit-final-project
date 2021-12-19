@@ -2,9 +2,14 @@
 require 'includes/functions.php';
 session_start();
 
-$product_info = getProductInfo($_GET['id']);
+if ($_SESSION['logged_in'] && $_SESSION['user_email']) {
+    echo '<h2>Welcome: ' . $_SESSION['user_email'] . '</h2>';
+}
 
+$product_info = getProductInfo($_GET['id']);
 $product_user = getProductUser($product_info['user']);
+
+addToRecentlyViewed($_GET['id']);
 
 ?>
 <!DOCTYPE html>
@@ -58,7 +63,7 @@ $product_user = getProductUser($product_info['user']);
                     </div>
                     <div class="panel-footer ">
                         <span><a href="<?php echo $product_user['email']?>"><i class="fa fa-envelope"></i> <?php echo $product_user['first_name'] . ' ' . $product_user['last_name']?></a></span>
-                        <span class="pull-right"><?php echo $product_info['price']?></span>
+                        <span class="pull-right"><?php echo '$'.number_format($product_info['price'], 2, '.', '') ?></span>
                     </div>
                 </div>
             </div>
