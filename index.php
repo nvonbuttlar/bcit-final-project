@@ -41,7 +41,7 @@ if ($_GET['downvote']) {
     $old_val = intval($product['downvote']);
     $new_dv_val = $old_val + 1;
 
-    addDownvote($product['id'], $new_dv_val);
+    handleDownvote($product['id'], $new_dv_val);
 }
 
 
@@ -102,7 +102,7 @@ $viewed_products = getViewedProducts();
             $count = 0;
             foreach($viewed_products as $product)
             {
-                if ($product['id'] == $_COOKIE['rv_'.$product['id']] && $count <= 4 && $product['downvote'] >= 5) {
+                if ($product['id'] == $_COOKIE['rv_'.$product['id']] && $count <= 4 && $product['downvote'] <= 5) {
 
                     $productUser = getProductUser($product['user']);
 
@@ -192,7 +192,7 @@ $viewed_products = getViewedProducts();
         <?php 
             foreach($products as $product)
             {
-                if ($product['downvote'] >= 5) {
+                if ($product['downvote'] <= 5) {
 
                     $productUser = getProductUser($product['user']);
 

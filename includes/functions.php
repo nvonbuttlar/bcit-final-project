@@ -238,14 +238,17 @@ function togglePin($old_val, $id) {
   return $success;
 }
 
-function addDownvote($id, $new_dv_val)  {
+function handleDownvote($id, $new_dv_val)  {
 
-  $link     = connect();
-  $query    = 'update products set downvote = "'. $new_dv_val .'" where id = "'. $id .'"';
-  
-  $success = mysqli_query($link, $query);
-  mysqli_close($link);
-  
-  header('Location: index.php');
-
+  if ($new_dv_val > 5) {
+    deleteProduct($id);
+  } else {
+    $link     = connect();
+    $query    = 'update products set downvote = "'. $new_dv_val .'" where id = "'. $id .'"';
+    
+    $success = mysqli_query($link, $query);
+    mysqli_close($link);
+    
+    header('Location: index.php');
+  }
 }
