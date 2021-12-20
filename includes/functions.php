@@ -170,7 +170,11 @@ function uploadProduct($data, $file, $user_id)
     $description = trim($data['description']);
     $picture = md5($title.time());
 
-    $moved   = move_uploaded_file($file['picture']['tmp_name'], 'products/'.$picture);
+    if($file['picture']['size'] < FILE_SIZE_LIMIT && $file['picture']['type'] == 'image/jpeg')
+    {
+      $moved   = move_uploaded_file($file['picture']['tmp_name'], 'products/'.$picture);
+    }
+
 
     if($moved)
     {
@@ -188,6 +192,8 @@ function uploadProduct($data, $file, $user_id)
         header('Location: index.php');
 
         return $result;
+    } else {
+       echo "failed to upload product";
     }
 
     return false;
@@ -230,4 +236,16 @@ function togglePin($old_val, $id) {
   header('Location: index.php');
 
   return $success;
+}
+
+function addDownvote($id, $new_dv_val)  {
+
+  $link     = connect();
+  $query    = 'update products set downvote = "'. $new_dv_val .'" where id = "'. $id .'"';
+  
+  $success = mysqli_query($link, $query);
+  mysqli_close($link);
+  
+  header('Location: index.php');
+
 }

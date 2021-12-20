@@ -32,9 +32,16 @@ if ($_GET['delete_id']) {
 }
 
 if ($_GET['toggle_pin']) {
-    echo "HERE";
     $product = getProductInfo($_GET['toggle_pin']);
     togglePin($product['pinned'], $product['id']);
+}
+
+if ($_GET['downvote']) {
+    $product = getProductInfo($_GET['downvote']);
+    $old_val = intval($product['downvote']);
+    $new_dv_val = $old_val + 1;
+
+    addDownvote($product['id'], $new_dv_val);
 }
 
 
@@ -95,7 +102,7 @@ $viewed_products = getViewedProducts();
             $count = 0;
             foreach($viewed_products as $product)
             {
-                if ($product['id'] == $_COOKIE['rv_'.$product['id']] && $count <= 4) {
+                if ($product['id'] == $_COOKIE['rv_'.$product['id']] && $count <= 4 && $product['downvote'] >= 5) {
 
                     $productUser = getProductUser($product['user']);
 
@@ -112,7 +119,7 @@ $viewed_products = getViewedProducts();
 
                     if ($_SESSION['logged_in']) {
                         $downvote_button = '
-                        <a class="pull-left" href="" data-toggle="tooltip" title="Downvote item">
+                        <a class="pull-left" href="index.php?downvote='.$product['id'].'" data-toggle="tooltip" title="Downvote item">
                             <i class="fa fa-thumbs-down"></i>
                         </a>';
                     } else {
@@ -185,70 +192,73 @@ $viewed_products = getViewedProducts();
         <?php 
             foreach($products as $product)
             {
-                $productUser = getProductUser($product['user']);
+                if ($product['downvote'] >= 5) {
 
-                $product['pinned'] ? $pinned_class = 'panel-warning' : $pinned_class = 'panel-info';
-                $product['pinned'] ? $pinned_icon = '<i class="fa fa-dot-circle-o"></i>' : $pinned_icon = '<i class="fa fa-thumb-tack"></i>';
+                    $productUser = getProductUser($product['user']);
 
-                if ($productUser['email'] == $_SESSION['user_email']) {
-                    $delete_button = '                            
-                    <span class="pull-right">
-                        <a class="" href="index.php?delete_id='.$product['id'].'" data-toggle="tooltip" title="Delete item">                            
-                            <i class="fa fa-trash"></i>
+                    $product['pinned'] ? $pinned_class = 'panel-warning' : $pinned_class = 'panel-info';
+                    $product['pinned'] ? $pinned_icon = '<i class="fa fa-dot-circle-o"></i>' : $pinned_icon = '<i class="fa fa-thumb-tack"></i>';
+
+                    if ($productUser['email'] == $_SESSION['user_email']) {
+                        $delete_button = '                            
+                        <span class="pull-right">
+                            <a class="" href="index.php?delete_id='.$product['id'].'" data-toggle="tooltip" title="Delete item">                            
+                                <i class="fa fa-trash"></i>
+                            </a>
+                        </span>';
+                    } else {
+                        $delete_button = '<span></span>';
+                    }
+
+                    if ($_SESSION['logged_in']) {
+                        $pin_button = '
+                        <a class="" href="index.php?toggle_pin='.$product['id'].'" data-toggle="tooltip" title="Unpin item">
+                            ' . $pinned_icon . '
                         </a>
-                    </span>';
-                } else {
-                    $delete_button = '<span></span>';
-                }
+                        ';
 
-                if ($_SESSION['logged_in']) {
-                    $pin_button = '
-                    <a class="" href="index.php?toggle_pin='.$product['id'].'" data-toggle="tooltip" title="Unpin item">
-                        ' . $pinned_icon . '
-                    </a>
-                    ';
+                        $downvote_button = '
+                        <a class="pull-left" href="index.php?downvote='.$product['id'].'" data-toggle="tooltip" title="Downvote item">
+                            <i class="fa fa-thumbs-down"></i>
+                        </a>';
+                    } else {
+                        $pin_button = '<span></span>';
+                        $downvote_button = '<span></span>';
+                    }
 
-                    $downvote_button = '
-                    <a class="pull-left" href="" data-toggle="tooltip" title="Downvote item">
-                        <i class="fa fa-thumbs-down"></i>
-                    </a>';
-                } else {
-                    $pin_button = '<span></span>';
-                    $downvote_button = '<span></span>';
-                }
+                    echo '
+                    <div class="row">
+                    <div class="col-md-3">
+                        <div class="panel '.$pinned_class.'">
+                            <div class="panel-heading">
+                                ' . $pin_button . '
+                                <span>
+                                    ' . $product['title'] . '
+                                </span>
+                                '. $delete_button .'
+                            </div>
+                            <div class="panel-body text-center">
+                                <p>
+                                    <a href="product.php?id='.$product['id'].'">
+                                        <img class="img-rounded img-thumbnail" src="products/' . $product['picture'] .'"/>
+                                    </a>
+                                </p>
+                                <p class="text-muted text-justify">
+                                    '.$product['description'].'
+                                </p>
+                                '. $downvote_button .'
+                            </div>
+                            <div class="panel-footer ">
 
-                echo '
-                <div class="row">
-                <div class="col-md-3">
-                    <div class="panel '.$pinned_class.'">
-                        <div class="panel-heading">
-                            ' . $pin_button . '
-                            <span>
-                                ' . $product['title'] . '
-                            </span>
-                            '. $delete_button .'
-                        </div>
-                        <div class="panel-body text-center">
-                            <p>
-                                <a href="product.php?id='.$product['id'].'">
-                                    <img class="img-rounded img-thumbnail" src="products/' . $product['picture'] .'"/>
-                                </a>
-                            </p>
-                            <p class="text-muted text-justify">
-                                '.$product['description'].'
-                            </p>
-                            '. $downvote_button .'
-                        </div>
-                        <div class="panel-footer ">
-
-                            <span><a href="mailto:'.$productUser['email'].'" data-toggle="tooltip" title="Email seller"><i class="fa fa-envelope"></i> ' . $productUser['first_name'].' '.$productUser['last_name'].'</a></span>
-                            <span class="pull-right">$' . number_format($product['price'], 2, '.', '') .'</span>
+                                <span><a href="mailto:'.$productUser['email'].'" data-toggle="tooltip" title="Email seller"><i class="fa fa-envelope"></i> ' . $productUser['first_name'].' '.$productUser['last_name'].'</a></span>
+                                <span class="pull-right">$' . number_format($product['price'], 2, '.', '') .'</span>
+                            </div>
                         </div>
                     </div>
-                </div>
-                </div>
-                ';
+                    </div>
+                    ';
 
+                }
             }
         ?> 
     </div>
