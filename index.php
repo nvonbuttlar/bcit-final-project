@@ -29,6 +29,10 @@ if ($_GET['product_upload']) {
     uploadProduct($_POST, $_FILES, $user['id']);
 }
 
+if ($_GET['delete_id']) {
+    deleteProduct($_GET['delete_id']);
+}
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -83,7 +87,19 @@ if ($_GET['product_upload']) {
             foreach($products as $product)
             {
                 if ($product['id'] == $_COOKIE['rv_'.$product['id']] && $count <= 4) {
+
                     $productUser = getProductUser($product['user']);
+
+                    if ($productUser['email'] == $_SESSION['user_email']) {
+                        $delete_button = '                            
+                        <span class="pull-right">
+                            <a class="" href="index.php?delete_id='.$product['id'].'" data-toggle="tooltip" title="Delete item">
+                                <i class="fa fa-trash"></i>
+                            </a>
+                        </span>';
+                    } else {
+                        $delete_button = '<span></span>';
+                    }
                     echo '
                     <div class="row">
                     <div class="col-md-3">
@@ -95,11 +111,7 @@ if ($_GET['product_upload']) {
                                 <span>
                                     ' . $product['title'] . '
                                 </span>
-                                <span class="pull-right">
-                                    <a class="" href="" data-toggle="tooltip" title="Delete item">
-                                        <i class="fa fa-trash"></i>
-                                    </a>
-                                </span>
+                                ' . $delete_button . '
                             </div>
                             <div class="panel-body text-center">
                                 <p>
@@ -161,6 +173,17 @@ if ($_GET['product_upload']) {
             foreach($products as $product)
             {
                 $productUser = getProductUser($product['user']);
+
+                if ($productUser['email'] == $_SESSION['user_email']) {
+                    $delete_button = '                            
+                    <span class="pull-right">
+                    <a class="" href="index.php?delete_id='.$product['id'].'" data-toggle="tooltip" title="Delete item">                            <i class="fa fa-trash"></i>
+                        </a>
+                    </span>';
+                } else {
+                    $delete_button = '<span></span>';
+                }
+
                 echo '
                 <div class="row">
                 <div class="col-md-3">
@@ -172,11 +195,7 @@ if ($_GET['product_upload']) {
                             <span>
                                 ' . $product['title'] . '
                             </span>
-                            <span class="pull-right">
-                                <a class="" href="" data-toggle="tooltip" title="Delete item">
-                                    <i class="fa fa-trash"></i>
-                                </a>
-                            </span>
+                            '. $delete_button .'
                         </div>
                         <div class="panel-body text-center">
                             <p>
@@ -216,7 +235,7 @@ if ($_GET['product_upload']) {
                             Cherry
                         </span>
                         <span class="pull-right text-muted">
-                            <a class="" href="" data-toggle="tooltip" title="Delete item">
+                            <a class="" href="index.php?delete_id='.$product_id.'" data-toggle="tooltip" title="Delete item">
                                 <i class="fa fa-trash"></i>
                             </a>
                         </span>

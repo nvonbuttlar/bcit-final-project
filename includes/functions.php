@@ -190,3 +190,14 @@ function getUser($email) {
 
     mysqli_close($link);
 }
+
+function deleteProduct($id)
+{
+    $link    = connect();
+    $query   = 'delete from products where id = "'.$id.'"';
+    $success = mysqli_query($link, $query);
+
+    mysqli_close($link);
+    header('Location: index.php');
+    return $success;
+}
