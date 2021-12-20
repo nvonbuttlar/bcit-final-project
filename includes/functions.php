@@ -24,28 +24,32 @@ function connect()
 function saveProfile($data)
 {
   if (isset($data)) {
-    $firstname = $data['first_name'];
-    $lastname = $data['last_name'];
-    $email = $data['email'];
-    $password = $data['password'];
+    $firstname = trim($data['first_name']);
+    $lastname = trim($data['last_name']);
+    $email = trim($data['email']);
+    $password = trim($data['password']);
 
     $hash = md5($password . SALT);
 
-    $link   = connect();
-    $query  = 'insert into users(first_name, last_name, email, password) values("'.$lastname.'","'.$firstname.'","'.$email.'","'.$hash.'")';
-    $result = mysqli_query($link, $query);
-
-    if ($result) {
-      echo "Sign up successful";
-      $_SESSION['logged_in'] = true;
-      $_SESSION['user_email'] = $email;
-    } else  {
-      echo "Sign up failed";
-    }
+    if(preg_match('/^.{8,}$/', $password)) {
+      $link   = connect();
+      $query  = 'insert into users(first_name, last_name, email, password) values("'.$firstname.'","'.$lastname.'","'.$email.'","'.$hash.'")';
+      $result = mysqli_query($link, $query);
   
-    mysqli_close($link);
-
+      if ($result) {
+        echo "Sign up successful";
+        $_SESSION['logged_in'] = true;
+        $_SESSION['user_email'] = $email;
+      } else  {
+        echo "Sign up failed";
+      }
+    
+      mysqli_close($link);
+    } else {
+      echo 'password must be 8 characters or longer';
+    }
   }
+  header('Location: index.php');
 }
 
 function checkSignUp($data)
@@ -106,7 +110,17 @@ function logout() {
 function getAllProducts()
 {
     $link     = connect();
-    $query    = 'select * from products';
+    $query    = 'select * from products order by pinned DESC';
+    $products = mysqli_query($link, $query);
+
+    mysqli_close($link);
+    return $products;
+}
+
+function getViewedProducts()
+{
+    $link     = connect();
+    $query    = 'select * from products order by pinned DESC';
     $products = mysqli_query($link, $query);
 
     mysqli_close($link);
@@ -166,11 +180,12 @@ function uploadProduct($data, $file, $user_id)
         $result = mysqli_query($link, $query);
         
         if ($result) {
-          header('Location: index.php');
           echo "You have succesfully posted a new product!";
         }
 
         mysqli_close($link);
+
+        header('Location: index.php');
 
         return $result;
     }
@@ -200,4 +215,19 @@ function deleteProduct($id)
     mysqli_close($link);
     header('Location: index.php');
     return $success;
+}
+
+function togglePin($old_val, $id) {
+
+  $old_val == 0? $new_val = 1 : $new_val = 0;
+
+  $link     = connect();
+  $query    = 'update products set pinned = "'. $new_val .'" where id = "'. $id .'"';
+  
+  $success = mysqli_query($link, $query);
+  mysqli_close($link);
+  
+  header('Location: index.php');
+
+  return $success;
 }
